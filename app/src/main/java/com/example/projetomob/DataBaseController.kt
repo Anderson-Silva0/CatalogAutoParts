@@ -4,7 +4,9 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.media.Image
+import android.graphics.Bitmap
+import android.widget.Toast
+import java.io.ByteArrayOutputStream
 
 class DataBaseController(context: Context) {
 
@@ -12,10 +14,27 @@ class DataBaseController(context: Context) {
     private val writableDatabase: SQLiteDatabase
     private val readableDatabase: SQLiteDatabase
 
-    init{
+    init {
         database = CreateDB(context)
         writableDatabase = database.writableDatabase
         readableDatabase = database.readableDatabase
+    }
+
+    fun salvarImagemEDescricao(bitmap: Bitmap, descricao: String, context: Context) {
+        val db = writableDatabase
+
+        val contentValues = ContentValues().apply {
+            put(CreateDB.IMAGE, getBytesFromBitmap(bitmap))
+        }
+
+        val newRowId = db.insert(CreateDB.TABLE, descricao, contentValues)
+        if (newRowId == -1L) {
+            Toast.makeText(context, "Erro ao tentar salvar imagem", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Imagem Salva com sucesso id: $newRowId", Toast.LENGTH_SHORT).show()
+        }
+
+        db.close()
     }
 
 //    fun insertData(description: String, image: Image): String {
@@ -55,6 +74,12 @@ class DataBaseController(context: Context) {
         val where = "${CreateDB.ID} = ?"
         val whereArgs = arrayOf(id.toString())
         writableDatabase.delete(CreateDB.TABLE, where, whereArgs)
+    }
+
+    private fun getBytesFromBitmap(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream)
+        return stream.toByteArray()
     }
 
 }

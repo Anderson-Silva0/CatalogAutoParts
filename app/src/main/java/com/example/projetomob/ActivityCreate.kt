@@ -2,13 +2,18 @@ package com.example.projetomob
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import java.io.ByteArrayOutputStream
 
 @Suppress("DEPRECATION")
 class ActivityCreate : ComponentActivity() {
@@ -22,10 +27,25 @@ class ActivityCreate : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create)
 
+        val dbController = DataBaseController(this)
         val btGaleria: Button = findViewById<Button>(R.id.btGaleria)
+        val imagemGaleria: ImageView = findViewById<ImageView>(R.id.imageViewGaleria)
+        val descricaoText: EditText = findViewById<EditText>(R.id.descricaoText)
+        val btSalvarImagem: Button = findViewById<Button>(R.id.btSalvarImagem)
 
-        btGaleria.setOnClickListener{
+        btGaleria.setOnClickListener {
             this.selectImageInAlbum()
+        }
+
+        btSalvarImagem.setOnClickListener{
+            val drawable = imagemGaleria.drawable
+            if (drawable is BitmapDrawable) {
+                dbController.salvarImagemEDescricao(drawable.bitmap,
+                    descricaoText.text.toString(),
+                    this)
+                imagemGaleria.setImageURI(null)
+                descricaoText.text = null
+            }
         }
     }
 
