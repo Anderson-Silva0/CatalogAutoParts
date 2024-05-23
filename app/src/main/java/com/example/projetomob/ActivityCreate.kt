@@ -2,19 +2,14 @@ package com.example.projetomob
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-import java.io.ByteArrayOutputStream
 
 @Suppress("DEPRECATION")
 class ActivityCreate : ComponentActivity() {

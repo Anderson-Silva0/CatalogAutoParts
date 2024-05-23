@@ -67,22 +67,6 @@ class DataBaseController(context: Context) {
         return partsList
     }
 
-
-//    fun insertData(description: String, image: Image): String {
-//        val values = ContentValues()
-//        values.put(CreateDB.DESCRIPTION, description)
-//        values.put(CreateDB.IMAGE, image)
-//        val result = writableDatabase.insert(CreateDB.TABLE,null, values)
-//        return if (result == -1L) "Error inserting record" else "Record inserting successfully"
-//    }
-
-//    fun loadData(): Cursor?{
-//        val fields = arrayOf(CreateDB.ID, CreateDB.DESCRIPTION)
-//        val cursor = readableDatabase.query(CreateDB.TABLE, fields, null, null,null)
-//        cursor.moveToFirst()
-//        return cursor
-//    }
-
     fun loadDataById(id: Int): Cursor?{
         val fields = arrayOf(CreateDB.ID, CreateDB.DESCRIPTION, CreateDB.IMAGE)
         val where = "${CreateDB.ID} = ?"
@@ -92,16 +76,7 @@ class DataBaseController(context: Context) {
         return cursor
     }
 
-//    fun updateData(id: Int, description: String, image: Image){
-//        val values = ContentValues()
-//        values.put(CreateDB.DESCRIPTION, description)
-//        values.put(CreateDB.IMAGE, image)
-//        val where = "${CreateDB.ID} = ?"
-//        val whereArgs = arrayOf(id.toString())
-//        writableDatabase.update(CreateDB.TABLE, values, where, whereArgs)
-//    }
-
-    fun deleteData(id: Int){
+    fun deleteDataById(id: Int){
         val where = "${CreateDB.ID} = ?"
         val whereArgs = arrayOf(id.toString())
         writableDatabase.delete(CreateDB.TABLE, where, whereArgs)
