@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
@@ -40,13 +41,16 @@ class ActivityCreate : ComponentActivity() {
         btSalvarImagem.setOnClickListener{
             val drawable = imagemGaleria.drawable
             if (drawable is BitmapDrawable) {
-                dbController.salvarImagemEDescricao(drawable.bitmap,
+                val bitmap = drawable.bitmap
+                val compressedBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.width / 2, bitmap.height / 2, true)
+                dbController.salvarImagemEDescricao(compressedBitmap,
                     descricaoText.text.toString(),
                     this)
                 imagemGaleria.setImageURI(null)
                 descricaoText.text = null
             }
         }
+
     }
 
     @SuppressLint("QueryPermissionsNeeded")
