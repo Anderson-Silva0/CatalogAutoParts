@@ -45,15 +45,16 @@ class DataBaseController(context: Context) {
         try {
             cursor = db.query(
                 CreateDB.TABLE,
-                arrayOf(CreateDB.IMAGE, CreateDB.DESCRIPTION),
+                arrayOf(CreateDB.ID, CreateDB.IMAGE, CreateDB.DESCRIPTION),
                 null, null, null, null, null
             )
 
             with(cursor) {
                 while (moveToNext()) {
+                    val id = getInt(getColumnIndexOrThrow(CreateDB.ID))
                     val image = getBlob(getColumnIndexOrThrow(CreateDB.IMAGE))
                     val description = getString(getColumnIndexOrThrow(CreateDB.DESCRIPTION))
-                    partsList.add(Part(image, description))
+                    partsList.add(Part(id, image, description))
                 }
             }
 
@@ -67,7 +68,7 @@ class DataBaseController(context: Context) {
         return partsList
     }
 
-    fun loadDataById(id: Int): Cursor?{
+    fun loadDataById(id: Int): Cursor? {
         val fields = arrayOf(CreateDB.ID, CreateDB.DESCRIPTION, CreateDB.IMAGE)
         val where = "${CreateDB.ID} = ?"
         val whereArgs = arrayOf(id.toString())
@@ -76,13 +77,13 @@ class DataBaseController(context: Context) {
         return cursor
     }
 
-    fun deleteDataById(id: Int){
+    fun deleteById(id: Int) {
         val where = "${CreateDB.ID} = ?"
         val whereArgs = arrayOf(id.toString())
         writableDatabase.delete(CreateDB.TABLE, where, whereArgs)
     }
 
-    fun deleteAll(){
+    fun deleteAll() {
         writableDatabase.delete(CreateDB.TABLE, null, null)
     }
 
