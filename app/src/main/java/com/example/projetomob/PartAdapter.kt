@@ -13,7 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class PartAdapter(private val pecas: List<Part>) : RecyclerView.Adapter<PartAdapter.ViewHolder>() {
+class PartAdapter(private val pecas: ArrayList<Part>) : RecyclerView.Adapter<PartAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageViewList: ImageView
@@ -65,11 +65,14 @@ class PartAdapter(private val pecas: List<Part>) : RecyclerView.Adapter<PartAdap
             alertDialogBuilder.setPositiveButton("Sim") { dialog, _ ->
 
                 holder.dbController.deleteById(id)
+                val newParts = ArrayList(pecas)
 
-                val mutableList = pecas.toMutableList()
-
-                mutableList.removeAt(position)
-//                notifyItemRemoved(position)
+                newParts.removeAt(position)
+                pecas.clear()
+                pecas.addAll(newParts)
+                notifyItemRemoved(position)
+                val itemChangedCount = pecas.size - position
+                notifyItemRangeChanged(position, itemChangedCount)
 
                 dialog.dismiss()
             }

@@ -38,8 +38,8 @@ class DataBaseController(context: Context) {
         db.close()
     }
 
-    fun getAllParts(context: Context): List<Part> {
-        val partsList = mutableListOf<Part>()
+    fun getAllParts(context: Context): ArrayList<Part> {
+        val partsList = ArrayList<Part>()
         val db = readableDatabase
         var cursor: Cursor? = null
         try {
