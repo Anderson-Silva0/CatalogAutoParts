@@ -24,7 +24,6 @@ class ActivityCreate : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create)
 
-        val dbController = DataBaseController(this)
         val btGaleria: Button = findViewById<Button>(R.id.btGaleria)
         val imagemGaleria: ImageView = findViewById<ImageView>(R.id.imageViewGaleria)
         val descricaoText: EditText = findViewById<EditText>(R.id.descricaoText)
@@ -35,6 +34,7 @@ class ActivityCreate : ComponentActivity() {
         }
 
         btSalvarImagem.setOnClickListener {
+            val dbController = DataBaseController(this)
             val drawable = imagemGaleria.drawable
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap

@@ -101,9 +101,6 @@ class DataBaseController(context: Context) {
         val whereArgs = arrayOf(id.toString())
         writableDatabase.delete(CreateDB.TABLE, where, whereArgs)
     }
-    fun deleteAll() {
-        writableDatabase.delete(CreateDB.TABLE, null, null)
-    }
 
     private fun getBytesFromBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
