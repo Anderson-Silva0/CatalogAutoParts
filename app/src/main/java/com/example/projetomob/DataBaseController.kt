@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
+import android.util.Log
 import android.widget.Toast
 import java.io.ByteArrayOutputStream
 
@@ -22,20 +23,47 @@ class DataBaseController(context: Context) {
 
     fun salvarImagemEDescricao(bitmap: Bitmap, descricao: String, context: Context) {
         val db = writableDatabase
+        try {
+            val contentValues = ContentValues().apply {
+                put(CreateDB.DESCRIPTION, descricao)
+                put(CreateDB.IMAGE, getBytesFromBitmap(bitmap))
+            }
 
-        val contentValues = ContentValues().apply {
-            put(CreateDB.DESCRIPTION, descricao)
-            put(CreateDB.IMAGE, getBytesFromBitmap(bitmap))
+            val newRowId = db.insert(CreateDB.TABLE, null, contentValues)
+            if (newRowId == -1L) {
+                Toast.makeText(context, "Erro ao tentar salvar imagem", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Imagem Salva com sucesso id: $newRowId", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Log.e("DataBaseController", "Error saving image and description", e)
+        } finally {
+            db.close()
         }
+    }
 
-        val newRowId = db.insert(CreateDB.TABLE, null, contentValues)
-        if (newRowId == -1L) {
-            Toast.makeText(context, "Erro ao tentar salvar imagem", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Imagem Salva com sucesso id: $newRowId", Toast.LENGTH_SHORT).show()
+    fun updateImagemEDescricao(id: Int, bitmap: Bitmap, descricao: String, context: Context) {
+        val db = writableDatabase
+        try {
+            val contentValues = ContentValues().apply {
+                put(CreateDB.DESCRIPTION, descricao)
+                put(CreateDB.IMAGE, getBytesFromBitmap(bitmap))
+            }
+
+            val selection = "${CreateDB.ID} = ?"
+            val selectionArgs = arrayOf(id.toString())
+
+            val count = db.update(CreateDB.TABLE, contentValues, selection, selectionArgs)
+            if (count == 0) {
+                Toast.makeText(context, "Erro ao tentar atualizar imagem", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Imagem atualizada com sucesso", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Log.e("DataBaseController", "Error updating image and description", e)
+        } finally {
+            db.close()
         }
-
-        db.close()
     }
 
     fun getAllParts(context: Context): ArrayList<Part> {
@@ -68,21 +96,11 @@ class DataBaseController(context: Context) {
         return partsList
     }
 
-    fun loadDataById(id: Int): Cursor? {
-        val fields = arrayOf(CreateDB.ID, CreateDB.DESCRIPTION, CreateDB.IMAGE)
-        val where = "${CreateDB.ID} = ?"
-        val whereArgs = arrayOf(id.toString())
-        val cursor = readableDatabase.query(CreateDB.TABLE, fields, where, whereArgs, null, null, null)
-        cursor.moveToFirst()
-        return cursor
-    }
-
     fun deleteById(id: Int) {
         val where = "${CreateDB.ID} = ?"
         val whereArgs = arrayOf(id.toString())
         writableDatabase.delete(CreateDB.TABLE, where, whereArgs)
     }
-
     fun deleteAll() {
         writableDatabase.delete(CreateDB.TABLE, null, null)
     }

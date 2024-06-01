@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -33,16 +34,21 @@ class ActivityCreate : ComponentActivity() {
             this.selectImageInAlbum()
         }
 
-        btSalvarImagem.setOnClickListener{
+        btSalvarImagem.setOnClickListener {
             val drawable = imagemGaleria.drawable
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap
                 val compressedBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.width / 2, bitmap.height / 2, true)
-                dbController.salvarImagemEDescricao(compressedBitmap,
-                    descricaoText.text.toString(),
-                    this)
+
+                try {
+                    dbController.salvarImagemEDescricao(compressedBitmap, descricaoText.text.toString(), this)
+                } catch (e: Exception) {
+                    Log.e("ActivityCreate", "Error saving image and description", e)
+                }
+
                 imagemGaleria.setImageURI(null)
-                descricaoText.text = null
+                imagemGaleria.setImageDrawable(null)
+                descricaoText.setText("")
             }
         }
 
